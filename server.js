@@ -269,8 +269,8 @@ async function classifyWithClaude(articles, apiKey, tenants, prospects) {
         max_tokens: 4000,
         system: `You are a Nordic logistics & industrial real estate analyst. Classify news for leasing signals.
 Return ONLY a raw JSON array. Each object:
-{"index":N,"company":"name","signal":"growth|expansion|funding|contract|layoff|decline|leadership|irrelevant","country":"sweden|denmark|finland|unknown","region":"Stockholm|Gothenburg|Malmö|Copenhagen|Helsinki|Jönköping|Linköping|Norrköping|Växjö|Halmstad|Helsingborg|Aarhus|Tampere|Turku|Espoo|Odense|unknown","relevance":1-10,"summary":"one sentence on RE leasing relevance","action":"one sentence outreach recommendation or empty"}
-Only non-irrelevant items. Raw JSON array only.`,
+{"index":N,"company":"extract the MAIN company name from the headline/description — never return Unknown if a company name is visible, look carefully at the headline","signal":"growth|expansion|funding|contract|layoff|decline|leadership|irrelevant","country":"sweden|denmark|finland|unknown","region":"Stockholm|Gothenburg|Malmö|Copenhagen|Helsinki|Jönköping|Linköping|Norrköping|Växjö|Halmstad|Helsingborg|Aarhus|Tampere|Turku|Espoo|Odense|unknown","relevance":1-10,"summary":"one sentence on RE leasing relevance","action":"one sentence specific outreach recommendation mentioning the company by name"}
+Rules: Extract company name carefully from the headline. Zalando, Stadium, Neste, DSV etc are all extractable. Only return Unknown if truly no company is mentioned. Only non-irrelevant items. Raw JSON array only.`,
         messages: [{ role: 'user', content: text }]
       })
     });
