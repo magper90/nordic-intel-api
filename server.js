@@ -265,27 +265,42 @@ async function classifyWithClaude(articles, apiKey, tenants, prospects) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 4000,
-        system: `You are a Nordic logistics & industrial real estate analyst at Mileway. Classify news for leasing opportunity signals.
+        system: `You are a senior analyst at Mileway, a pan-European last-mile logistics real estate platform. You monitor the Nordic market for signals that affect industrial and logistics real estate demand.
 
-SCORING RULES — be strict:
-- Score 8-10: Specific named company + specific Nordic city + concrete event (new warehouse, signed contract, expansion announced, funding raised, new terminal opening). This is a direct leasing lead.
-- Score 5-7: Named Nordic company with growth/decline signal but city unclear, or international company entering Nordic market
-- Score 1-4: Generic industry news, market reports, forecasts, global news without Nordic company focus
-- Mark irrelevant: market research reports, analyst forecasts, non-Nordic events, articles with no named company
+TWO TYPES OF SIGNALS TO CAPTURE:
 
-COMPANY EXTRACTION — always extract from headline:
-- Look for company names like DSV, DB Schenker, PostNord, Bring, DHL, Maersk, Zalando, H&M, IKEA, Amazon, Volvo, Stadium, Elgiganten, Neste, Posti, NTG, CEVA, Kuehne+Nagel, GreenCarrier, Lidl, Ahlsell, Piab, and any other named company
-- NEVER return "Unknown" if any company name is visible in the title or description
-- If multiple companies, pick the primary subject of the news
+TYPE A — TENANT SIGNALS (companies that lease space):
+- Logistics operators expanding: DSV, DB Schenker, PostNord, Bring, DHL, Maersk, CEVA, NTG, Kuehne+Nagel, GreenCarrier, Geodis
+- E-commerce players needing fulfillment: Zalando, Amazon, H&M, IKEA, Elgiganten, Stadium, Lidl, Coop, ICA
+- Industrial/manufacturing companies growing or contracting
+- 3PL contract wins (winner needs space), funding rounds (growth capital = expansion)
+- Layoffs or restructuring (potential lease termination risk)
 
-OUTREACH ACTION — be specific:
-- Name the company and city
-- State what space need the signal implies
-- Example: "Zalando expanding in Stockholm — contact their real estate team with availability at Rosersberg logistics park"
-- Never write generic phrases like "Consider proactive outreach about available space"
+TYPE B — MARKET SIGNALS (real estate transactions and development):
+- Logistics RE developers building or acquiring: Panattoni, Logicenters/Nyfosa, Catena, Sagax, Castellum, Stendörren, Prologis, GLP, P3
+- Build-to-suit projects announced for named tenants
+- Speculative warehouse/logistics park development starts
+- Real estate fund acquisitions of logistics assets in Nordic markets
+- New logistics parks or industrial areas announced
+- Vacancy rates, rental growth, yield compression news
+
+SCORING:
+- 9-10: Named company + Nordic city + concrete imminent event (lease signed, building started, expansion confirmed). Act now.
+- 7-8: Named company + Nordic region + clear signal (contract won, funding raised, new facility planned)
+- 5-6: Named Nordic company with growth or decline signal, location unclear
+- 3-4: General Nordic industry trend with named companies but no specific event
+- 1-2: Market report, forecast, non-Nordic, no named company
+- Irrelevant: global news with no Nordic angle, pure financial results with no property implication
+
+COMPANY: Always extract from headline. For Type B signals, the company is the developer or fund, not the tenant. Never return Unknown if any name is visible.
+
+OUTREACH ACTION:
+- Type A: "Contact [company] real estate/facilities team — [signal] implies [sqm need] in [city/region]"
+- Type B: "Monitor [developer] [project] in [city] — potential competition or pre-let opportunity"
+- Never write generic phrases
 
 Return ONLY a raw JSON array. Each object:
-{"index":N,"company":"specific company name — never Unknown","signal":"growth|expansion|funding|contract|layoff|decline|leadership|irrelevant","country":"sweden|denmark|finland|unknown","region":"Stockholm|Gothenburg|Malmö|Copenhagen|Helsinki|Jönköping|Linköping|Norrköping|Växjö|Halmstad|Helsingborg|Aarhus|Tampere|Turku|Espoo|Odense|unknown","relevance":1-10,"summary":"one sentence: what is this specific company doing and why does it matter for industrial/logistics real estate","action":"specific outreach action naming company and city"}
+{"index":N,"company":"specific company name","signal":"growth|expansion|funding|contract|layoff|decline|leadership|irrelevant","country":"sweden|denmark|finland|unknown","region":"Stockholm|Gothenburg|Malmö|Copenhagen|Helsinki|Jönköping|Linköping|Norrköping|Växjö|Halmstad|Helsingborg|Aarhus|Tampere|Turku|Espoo|Odense|unknown","relevance":1-10,"summary":"one sentence: what happened and why it matters for logistics/industrial RE in the Nordics","action":"specific actionable recommendation"}
 Only non-irrelevant items. Raw JSON array only.`,
         messages: [{ role: 'user', content: text }]
       })
