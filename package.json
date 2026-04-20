@@ -1,11 +1,10 @@
 {
-  "name": "nordic-intel-api",
+  "name": "dockside-intel-api",
   "version": "1.0.0",
-  "description": "Nordic Market Intelligence API — RSS proxy + Anthropic classifier",
+  "description": "Dockside Intel API — RSS proxy + Anthropic classifier + Resend email",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=18.0.0"
